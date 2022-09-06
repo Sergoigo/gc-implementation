@@ -28,7 +28,7 @@ public class GarbageCollectorImplementation implements GarbageCollector {
             frames) {
       for (ApplicationBean bean :
               frame.parameters) {
-        aliveBeans.addAll(getRelation(bean));
+        aliveBeans.addAll(getRelation(bean, aliveBeans));
       }
     }
     return aliveBeans;
@@ -39,20 +39,18 @@ public class GarbageCollectorImplementation implements GarbageCollector {
     for (Map.Entry<String, ApplicationBean> bean :
             beans.entrySet()) {
       ApplicationBean frame = bean.getValue();
-        aliveBeans.addAll(getRelation(frame));
+        aliveBeans.addAll(getRelation(frame, aliveBeans));
     }
-    System.out.println(aliveBeans);
     return aliveBeans;
   }
-    private Set<ApplicationBean> getRelation(ApplicationBean bean){
-      Set<ApplicationBean> garbage = new HashSet<>();
-      garbage.add(bean);
-      bean.getFieldValues()
-              .forEach(
-                      (key, value) -> {
-                        garbage.addAll(getRelation(value));
-                      });
-      return garbage;
+  private Set<ApplicationBean> getRelation(ApplicationBean bean, Set<ApplicationBean> beanSet) {
+    if (!beanSet.contains(bean)){
+      beanSet.add(bean);
+      for(Map.Entry<String, ApplicationBean> beanEntry : bean.getFieldValues().entrySet()){
+        getRelation(beanEntry.getValue(), beanSet);
+      }
+    }
+    return beanSet;
 
   }
 }

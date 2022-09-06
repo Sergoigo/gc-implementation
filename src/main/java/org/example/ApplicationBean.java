@@ -11,12 +11,6 @@ public class ApplicationBean {
     return fieldValues;
   }
 
-  @Override
-  public String toString() {
-    return "ApplicationBean{" +
-            "fieldValues=" + fieldValues +
-            '}';
-  }
 
   public ApplicationBean getChildBean(String beanName) {
     return fieldValues.get(beanName);
